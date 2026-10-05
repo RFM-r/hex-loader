@@ -3,7 +3,7 @@ name: Release Hex Loader
 on:
   push:
     tags:
-      - 'v*' # Запускается при создании тега вида v1.0.0
+      - 'v*'
 
 jobs:
   build:
@@ -36,14 +36,25 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.22' # Fyne v2.8 требует Go 1.21+
+        go-version: '1.22'
 
-    # Установка зависимостей для Linux (X11/GL)
+    # ✅ ИСПРАВЛЕНО: полные зависимости для Fyne на Linux (X11 + Wayland + GL)
     - name: Install Linux Dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgl1-mesa-dev xorg-dev
+        sudo apt-get install -y \
+          libgl1-mesa-dev \
+          xorg-dev \
+          libwayland-dev \
+          libxkbcommon-dev \
+          libegl1-mesa-dev \
+          libx11-dev \
+          libxcursor-dev \
+          libxrandr-dev \
+          libxinerama-dev \
+          libxi-dev \
+          libxxf86vm-dev
 
     - name: Build Binary
       env:
